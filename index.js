@@ -1,10 +1,10 @@
 const inquirer = require("inquirer");
 var connection = require("./config/connection");
-// const { start } = require("repl");
 const cTable = require('console.table');
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
+require("dotenv").config();
 
-const teamMember = [];
+// const teamMember = [];
 
 //THIS IS FOR THE ENV AND ENV example tabs
 const result = dotenv.config()
@@ -12,6 +12,7 @@ if (result.error) {
   throw result.error
 }
  
+//THIS console log the file .env from above. 
 // console.log(result.parsed)
 
 //CREATED THE TABLE TO SHOW INSIDE OF THE CONSOLE LOG
@@ -25,71 +26,52 @@ const table = cTable.getTable([
     salary: 100000,
     manager_id: "Manager Name",
   },
-  {
-    id: 2,
-    first_name: "first2",
-    last_name: "last2",
-    title: "Sales Person",
-    department: "Legal",
-    salary: 30000000,
-    manager_id: "Manager Name",
-  },
-  {
-    id: 3,
-    first_name: "first3",
-    last_name: "last3",
-    title: "Lawyer",
-    department: "Legal",
-    salary: 600000,
-    manager_id: "Manager Name",
-  }, 
 ]);
 
 start();
 
 // //function for ADD Department 
-function addDepartment (){
-  inquirer.prompt([
+function addDepartment (answer){
+  inquirer.prompt ([
     {
+      type: "input",
+      message: "What would you like to update",
       name: "addDepartment",
-      type: "list",
-      message: "What department is the employee in?",
-      choices: ["Sales", "Legal", "Engineering", "Finance"]
-    },
-  ]).then((answer) => {
-    console.log(answer);
-    // connection.query("INSERT INTO department SET ? ", {name: answer.addDepartmentId});
+    }
+  ]).then(function(answer) {
+    console.table(answer.id, answer.first_name, answer.last_name, answer.answerTitle, answer.answerDepartment, answer.salary, answer.manager_id)
+    connection.query(
+      "INSERT INTO department SET ?",
+      {
+        id: answer.id,
+        first_name: answer.first_name,
+        last_name: answer.last_name,
+        role_id: answer.role_id,
+        manager_id: answer.manager_id
+      },
+      (err) => {
+        if (err) throw err;
+        console.log("Department Added" + answer[0].id + answer[0].first_name + answer[0].last_name + answer[0].answerTitle + answer[0].role_id + answer[0].manager_id);
       start();
-  })
+      }
+    )
+  });
 }
-//   ]).then((answer) => {
-//     connection.query(
-//       "INSERT INTO department SET ?",
-//       {
-//         name: answer.departmentId,
-//       },
-//       (error) => {
-//         if (error) throw error;
-//         console.log("Department Saved and Added");
-
-//         start();
-//       }
-//     );
-//   });
-// }
 function start () {
   inquirer.prompt ([
     {
     name: "name",
     type: "list",
     message: "Hi, What would you like to do?",
-    choices: ["Add Team Member", "Add Department", "View all Departments", "Update Department", "Delete Employee", "Show Directory"],
+    choices: ["Add Team Member", "Add Department", "Add Role", "View all Departments", "Update Department", "Delete Employee", "Show Directory"],
     }
   ]).then((answer) => {
     if (answer.name === "Add Team Member"){
       addEmployee();
     } else if (answer.name === "View all Departments") {
       viewDepartments();
+    } else if (answer.name === "Add Role"){
+      addRoleFunction();
     } else if (answer.name === "Update Department"){
       updateFunction();
     } else if (answer.name === "Delete Employee") {
@@ -97,11 +79,34 @@ function start () {
     } else if (answer.name === "Add Department") {
       addDepartment();
     } else if (answer.name === "Show Directory"){
-      generate ();
+      generate();
+     connection.end();
     } else (answer.name === "name" )
-      // connection.end();
     }
   );
+}
+
+function addRoleFunction (answer){
+  inquirer.prompt ([
+    {
+      type: "input",
+      message: "What would you like to update",
+      name: "role_id",
+    }
+  ]).then(function(answer) {
+    console.table(answer.role_id)
+    connection.query(
+      "VIEW FROM department SET ?",
+      {
+        role_id: answer.role_id,
+      },
+      (err) => {
+        if (err) throw err;
+        console.table("Role Added" +  answer[0].role_id);
+      start();
+      }
+    )
+  });
 }
 
 // //FUNCTION FOR add EMPLOYEE
@@ -110,17 +115,23 @@ function addEmployee() {
     {
       type: "input",
       message: "Enter Department ID if known, if not skip. ",
-      name: "answerId",
+      name: "id",
+      validate: function(value){
+        if(isNaN(value) === false){
+          return true;
+        }
+        return false;
+      }
     },
     {
       type: "input",
       message: "What is name of employee first name?",
-      name: "answerFirstName",
+      name: "first_name",
     },
     {
       type: "input",
       message: "What is name of employee last name?",
-      name: "answerLastName",
+      name: "last_name",
     },
     {
       type: "list",
@@ -137,22 +148,30 @@ function addEmployee() {
     {
       type: "input",
       message: "What is the salary?",
-      name: "answerRole",
+      name: "salary",
     },
     {
       type: "input",
       message: "What's the employee's managers name?",
-      name: "answerManager",
+      name: "manager_id",
     },
-  ]).then((answer) => {
-    console.log(answer);
-    console.log("add employee function clicked");
-    console.log("add employee answers saved");
-
-    // connection.query("INSERT INTO employee SET ? ", {name: answer.answerId + answer.answerFirstName + answer.answerLastName + answer.answerTitle + answer.answerDeparment + answer.answerRole + answer.answerManager});
-    
-    start();
-  });
+  ]).then(function(answer) {
+    console.table(answer.id, answer.first_name, answer.last_name, answer.answerTitle, answer.answerDepartment, answer.salary, answer.manager_id)
+    connection.query(
+      "INSERT INTO departments SET ?",
+      {
+        id: answer.id,
+        first_name: answer.first_name,
+        last_name: answer.last_name,
+        role_id: answer.role_id,
+        manager_id: answer.manager_id
+      },
+      (err) => {
+        if (err) throw err;
+        console.table("Employee Add" + answer[0].id + answer[0].first_name + answer[0].answerLast_name + answer[0].role_id + answer[0].manager_id);
+      start();
+      });
+    });
 }
 
 // //FUNCTION VIEW DEPARTMENT
@@ -161,7 +180,7 @@ function viewDepartments() {
     {
       type: "input",
       message: "Enter Department ID if known, if not skip. ",
-      name: "answerDepartmentId",
+      name: "role_id",
     },
     {
       type: "list",
@@ -169,14 +188,20 @@ function viewDepartments() {
       name: "answerDepartment",
       choices: ["Sales", "Finance", "Lawyer", "Legal", "Engineer"],
     },
-  ]).then((answer) => {
-    console.log(answer);
-    console.log("view departments function clicked");
-    console.log("view department answers saved");
-
-    // connection.query("SELECT * FROM department VIEW ? ", {name: answer.answerDepartment})
-    
-    start();
+  ]).then(function(answer) {
+    console.log(answer.id, answer.answerDepartment)
+    connection.query(
+      "SELECT * FROM  departments SET ?",
+      {
+        id: answer.id,
+        department: answer.answerDepartment
+      },
+      (err) => {
+        if (err) throw err;
+        console.table("Employee Add" + answer[0].id + answer[0].answerDepartment);
+      start();
+      }
+    )
   });
 }
 
@@ -189,15 +214,19 @@ function updateFunction() {
       name: "answerUpdateDepartment",
       choices: ["id", "First Name", "Last Name", "title", "department", "salary", "manager"],
     },
-  ]).then((answer) => {
-    //create function to bring to the inputted 
-    console.log(answer);
-    console.log("update function FOR THE DEPARTMENT clicked");
-    console.log("update function answers saved");
-
-    // connection.query("SELECT * FROM department", {name: answer.answerUpdateDepartment})
-    
-    start();
+  ]).then (function(answer) {
+    console.table(answer.answerUpdateDepartment)
+    connection.query(
+      "SELECT FROM employee SET ?",
+      {
+        id: answer.answerUpdateDepartment,
+      },
+      (err) => {
+        if (err) throw err;
+        console.log("Employee Add" + answer[0].id + answer[0].first_name + answer[0].answerLast_name + answer[0].role_id + answer[0].manager_id);
+      start();
+      }
+    )
   });
 }
 
@@ -215,28 +244,26 @@ function deleteFunction() {
       name: "answerDeleteDepartment",
       choices: ["id", "First Name", "Last Name", "title", "department", "salary", "manager"],
     },
-  ]).then((answer) => {
-    console.log(answer);
-    console.log("delete function was clicked");
-    console.log("delete function answers saved");
-    //create function to show the directory to delete
-    // connection.query("SELECT * FROM department SET ? ", {name: answer.answerName + answer.answerDeleteDepartment})
-    
-    start();
+  ]).then(function(answer) {
+    console.table(answer.answerfirst_name, answer.answerDeleteDepartment)
+    connection.query(
+      "VIEW departments SET ?",
+      {
+        answer: answer.first_name,
+        answer: answerDeleteDepartment,
+      },
+      (err) => {
+        if (err) throw err;
+        console.table("Employee Deleted" + answer[0].answer.first_name + answer[0].answerDeleteDepartment);
+      start();
+      }
+    )
   });
 }
 
 //FUNCTION FOR THE GENERATE/SHOW DIRECOTOY 
 function generate (){
-  inquirer.prompt ([
-    {
-      type: "input",
-      message: " Viewing the Directory",
-      name: "generate",
-    }
-  ]).then ((answer) => {
-    console.log(table + answer)
-
-    // connection.query("VIEW * FROM department VIEW ? ");
-  })
+    console.table(table)
+    connection.end
 }
+

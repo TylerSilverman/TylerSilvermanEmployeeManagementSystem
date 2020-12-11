@@ -1,29 +1,39 @@
-DROP DATABASE IF EXISTS employeeManagementSystem_db;
-CREATE DATABASE employeeManagementSystem_db;
+DROP DATABASE IF EXISTS tylersilvermanemployeemanagementsystem_db;
+CREATE DATABASE tylersilvermanemployeemanagementsystem_db;
 
-USE employeeManagementSystem_db;
+USE tylersilvermanemployeemanagementsystem_db;
 
 CREATE TABLE departments (
-  id INT NOT NULL AUTO_INCREMENT,
-  name VARCHAR(50) NOT NULL
+  answerId INT NOT NULL AUTO_INCREMENT,
+  first_name VARCHAR(50),
+  last_name VARCHAR(50),
+  role_id INT default 0,
+  manager_id VARCHAR(50),
+  salary INT default 0,
+  department VARCHAR(50),
   PRIMARY KEY (id)
 );
 
 
 CREATE TABLE roles (
-  id INT NOT NULL AUTO_INCREMENT,
-  title VARCHAR(50),
+  answerId INT NOT NULL AUTO_INCREMENT,
+  first_name VARCHAR(50),
+  last_name VARCHAR(50),
+  role_id INT default 0,
+  manager_id VARCHAR(50),
   salary INT default 0,
   department VARCHAR(50),
   PRIMARY KEY (id)
 );
 
 CREATE TABLE employees (
-  id INT NOT NULL AUTO_INCREMENT,
+  answerId INT NOT NULL AUTO_INCREMENT,
   first_name VARCHAR(50),
   last_name VARCHAR(50),
   role_id INT default 0,
   manager_id VARCHAR(50),
+  salary INT default 0,
+  department VARCHAR(50),
   PRIMARY KEY (id)
 );
 

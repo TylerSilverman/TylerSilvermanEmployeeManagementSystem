@@ -1,10 +1,10 @@
 var mysql = require("mysql");
 
 var connection = mysql.createConnection({
-    host     : 'localhost',
+    host     : process.env.DB_HOST,
     port     : 3306,
-    user     : 'root',
-    password : 'bootcampTS954',
+    user     : "root",
+    password : "bootcampTS954",
     database : 'employeeManagementSystem_db'
   });
 
@@ -12,3 +12,5 @@ var connection = mysql.createConnection({
 connection.connect(() => {
     console.log("connected as ID " + connection.threadId);
 });
+
+module.exports = connection;
