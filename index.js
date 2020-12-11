@@ -189,7 +189,7 @@ function viewDepartments() {
       choices: ["Sales", "Finance", "Lawyer", "Legal", "Engineer"],
     },
   ]).then(function(answer) {
-    console.log(answer.id, answer.answerDepartment)
+    console.table(answer.id, answer.answerDepartment)
     connection.query(
       "SELECT * FROM  departments SET ?",
       {
@@ -223,7 +223,7 @@ function updateFunction() {
       },
       (err) => {
         if (err) throw err;
-        console.log("Employee Add" + answer[0].id + answer[0].first_name + answer[0].answerLast_name + answer[0].role_id + answer[0].manager_id);
+        console.table("Employee Add" + answer[0].id + answer[0].first_name + answer[0].answerLast_name + answer[0].role_id + answer[0].manager_id);
       start();
       }
     )
