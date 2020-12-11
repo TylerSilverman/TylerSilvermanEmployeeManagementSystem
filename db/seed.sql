@@ -4,7 +4,7 @@ CREATE DATABASE tylersilvermanemployeemanagementsystem_db;
 USE tylersilvermanemployeemanagementsystem_db;
 
 CREATE TABLE departments (
-  answerId INT NOT NULL AUTO_INCREMENT,
+  id INT NOT NULL AUTO_INCREMENT,
   first_name VARCHAR(50),
   last_name VARCHAR(50),
   role_id INT default 0,
@@ -16,7 +16,7 @@ CREATE TABLE departments (
 
 
 CREATE TABLE roles (
-  answerId INT NOT NULL AUTO_INCREMENT,
+  id INT NOT NULL AUTO_INCREMENT,
   first_name VARCHAR(50),
   last_name VARCHAR(50),
   role_id INT default 0,
@@ -27,7 +27,7 @@ CREATE TABLE roles (
 );
 
 CREATE TABLE employees (
-  answerId INT NOT NULL AUTO_INCREMENT,
+  id INT NOT NULL AUTO_INCREMENT,
   first_name VARCHAR(50),
   last_name VARCHAR(50),
   role_id INT default 0,
